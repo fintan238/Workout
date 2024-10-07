@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, TouchableOpacity, Modal, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button, TouchableOpacity, Modal, TextInput, FlatList, CheckBox } from 'react-native';
 import Swiper from 'react-native-web-swiper';
 import { FontAwesome } from '@expo/vector-icons';
+import { bodyParts, categories, exercises } from '../exercises';
+import styles from '../styles';
 
 export default function WorkoutScreen() {
   const [templates, setTemplates] = useState([]);
@@ -11,6 +13,14 @@ export default function WorkoutScreen() {
   const [workoutTitle, setWorkoutTitle] = useState('');
   const [timer, setTimer] = useState(0);
   const [intervalId, setIntervalId] = useState(null);
+  const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
+  const [bodyPart, setBodyPart] = useState('Any Body Part');
+  const [category, setCategory] = useState('Any Category');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [bodyPartDropdownVisible, setBodyPartDropdownVisible] = useState(false);
+  const [categoryDropdownVisible, setCategoryDropdownVisible] = useState(false);
+  const [selectedExercises, setSelectedExercises] = useState([]);
+  const [workoutExercises, setWorkoutExercises] = useState([]);
 
   const renderItem = (item, index) => (
     <View key={index} style={styles.carouselItem}>
@@ -59,16 +69,146 @@ export default function WorkoutScreen() {
     return `${mins}m ${secs}s`;
   };
 
+  const renderExerciseItem = ({ item }) => {
+    const isSelected = selectedExercises.includes(item.name);
+    return (
+      <TouchableOpacity
+        style={[styles.exerciseItem, isSelected && styles.selectedExerciseItem]}
+        onPress={() => {
+          if (isSelected) {
+            setSelectedExercises(selectedExercises.filter(name => name !== item.name));
+          } else {
+            setSelectedExercises([...selectedExercises, item.name]);
+          }
+        }}
+      >
+        <Text>{item.name}</Text>
+        {isSelected && <FontAwesome name="check" size={24} color="white" />}
+      </TouchableOpacity>
+    );
+  };
+
+  const filteredExercises = exercises.filter(exercise =>
+    (bodyPart === 'Any Body Part' || exercise.bodyPart === bodyPart) &&
+    (category === 'Any Category' || exercise.category === category) &&
+    exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleAddExercises = () => {
+    const exercisesWithSets = selectedExercises.map(name => ({
+      name,
+      sets: [{ set: 1, previous: '', kg: '', reps: '', completed: false }],
+    }));
+    setWorkoutExercises(exercisesWithSets);
+    setExerciseModalVisible(false);
+  };
+
+  const addSet = (exerciseName) => {
+    setWorkoutExercises(prevExercises =>
+      prevExercises.map(exercise =>
+        exercise.name === exerciseName
+          ? {
+              ...exercise,
+              sets: [
+                ...exercise.sets,
+                { set: exercise.sets.length + 1, previous: '', kg: '', reps: '', completed: false },
+              ],
+            }
+          : exercise
+      )
+    );
+  };
+
+  const renderWorkoutExercise = ({ item }) => (
+    <View style={styles.workoutExerciseContainer}>
+      <Text style={styles.workoutExerciseName}>{item.name}</Text>
+      <View style={styles.tableHeader}>
+        <Text style={styles.tableHeaderText}>Set</Text>
+        <Text style={styles.tableHeaderText}>Previous</Text>
+        <Text style={styles.tableHeaderText}>kg</Text>
+        <Text style={styles.tableHeaderText}>Reps</Text>
+        <FontAwesome name="check" size={24} color="black" />
+      </View>
+      {item.sets.map((set, index) => (
+        <View key={index} style={styles.tableRow}>
+          <Text style={styles.tableRowText}>{set.set}</Text>
+          <Text style={styles.tableRowText}>{set.previous}</Text>
+          <TextInput
+            style={styles.tableInput}
+            keyboardType="numeric"
+            value={set.kg}
+            onChangeText={(text) =>
+              setWorkoutExercises(prevExercises =>
+                prevExercises.map(exercise =>
+                  exercise.name === item.name
+                    ? {
+                        ...exercise,
+                        sets: exercise.sets.map((s, i) =>
+                          i === index ? { ...s, kg: text } : s
+                        ),
+                      }
+                    : exercise
+                )
+              )
+            }
+          />
+          <TextInput
+            style={styles.tableInput}
+            keyboardType="numeric"
+            value={set.reps}
+            onChangeText={(text) =>
+              setWorkoutExercises(prevExercises =>
+                prevExercises.map(exercise =>
+                  exercise.name === item.name
+                    ? {
+                        ...exercise,
+                        sets: exercise.sets.map((s, i) =>
+                          i === index ? { ...s, reps: text } : s
+                        ),
+                      }
+                    : exercise
+                )
+              )
+            }
+          />
+          <CheckBox
+            value={set.completed}
+            onValueChange={(newValue) =>
+              setWorkoutExercises(prevExercises =>
+                prevExercises.map(exercise =>
+                  exercise.name === item.name
+                    ? {
+                        ...exercise,
+                        sets: exercise.sets.map((s, i) =>
+                          i === index ? { ...s, completed: newValue } : s
+                        ),
+                      }
+                    : exercise
+                )
+              )
+            }
+          />
+        </View>
+      ))}
+      <TouchableOpacity
+        style={styles.addSetButton}
+        onPress={() => addSet(item.name)}
+      >
+        <Text style={styles.addSetButtonText}>Add Set</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <Button title="Start a new workout" onPress={startWorkout} />
       <Text style={styles.sectionTitle}>Templates</Text>
-      <Swiper>
-        {templates.map((item, index) => renderItem(item, index))}
-      </Swiper>
       <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
         <Text style={styles.addButtonText}>Add New Template</Text>
       </TouchableOpacity>
+      <Swiper>
+        {templates.map((item, index) => renderItem(item, index))}
+      </Swiper>
       <Modal
         animationType="slide"
         transparent={true}
@@ -111,116 +251,81 @@ export default function WorkoutScreen() {
             </TouchableOpacity>
           </View>
           <Text style={styles.timer}>{formatTime(timer)}</Text>
-          <TouchableOpacity style={styles.addButton} onPress={() => {}}>
+          <TouchableOpacity style={styles.addButton} onPress={() => setExerciseModalVisible(true)}>
             <Text style={styles.addButtonText}>Add Exercises</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.cancelButton} onPress={cancelWorkout}>
             <Text style={styles.cancelButtonText}>Cancel Workout</Text>
           </TouchableOpacity>
+          <FlatList
+            data={workoutExercises}
+            renderItem={renderWorkoutExercise}
+            keyExtractor={(item) => item.name}
+          />
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={exerciseModalVisible}
+        onRequestClose={() => {
+          setExerciseModalVisible(!exerciseModalVisible);
+        }}
+      >
+        <View style={styles.exerciseModalView}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={() => setExerciseModalVisible(false)}>
+              <FontAwesome name="close" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleAddExercises}
+              disabled={selectedExercises.length === 0}
+              style={[styles.addButton, selectedExercises.length === 0 && styles.disabledButton]}
+            >
+              <Text style={styles.addButtonText}>Add</Text>
+            </TouchableOpacity>
+          </View>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search exercises"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          <TouchableOpacity style={styles.filterButton} onPress={() => setBodyPartDropdownVisible(!bodyPartDropdownVisible)}>
+            <Text>{bodyPart}</Text>
+          </TouchableOpacity>
+          {bodyPartDropdownVisible && (
+            <View style={styles.dropdown}>
+              {bodyParts.map((part, index) => (
+                <TouchableOpacity key={index} onPress={() => { setBodyPart(part); setBodyPartDropdownVisible(false); }}>
+                  <Text style={styles.dropdownItem}>{part}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+          <TouchableOpacity style={styles.filterButton} onPress={() => setCategoryDropdownVisible(!categoryDropdownVisible)}>
+            <Text>{category}</Text>
+          </TouchableOpacity>
+          {categoryDropdownVisible && (
+            <View style={styles.dropdown}>
+              {categories.map((cat, index) => (
+                <TouchableOpacity key={index} onPress={() => { setCategory(cat); setCategoryDropdownVisible(false); }}>
+                  <Text style={styles.dropdownItem}>{cat}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+          {filteredExercises.length > 0 ? (
+            <FlatList
+              data={filteredExercises}
+              renderItem={renderExerciseItem}
+              keyExtractor={(item) => item.name}
+            />
+          ) : (
+            <Text>{`${searchQuery} not found`}</Text>
+          )}
         </View>
       </Modal>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingTop: 50,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 20,
-  },
-  carouselItem: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    height: 150,
-    padding: 50,
-    marginLeft: 25,
-    marginRight: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 20,
-    width: '80%',
-    paddingHorizontal: 10,
-  },
-  workoutModalView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white', // Set background color to white
-  },
-  workoutModalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    padding: 20,
-    backgroundColor: 'white',
-  },
-  workoutTitle: {
-    flex: 1,
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  finishButton: {
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 5,
-  },
-  finishButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  timer: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    marginVertical: 20,
-    color: 'black', // Change color to black for better visibility on white background
-  },
-  cancelButton: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  cancelButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-});
