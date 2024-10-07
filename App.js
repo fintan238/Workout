@@ -21,7 +21,7 @@ export default function App() {
             if (route.name === 'Profile') {
               iconName = 'user';
             } else if (route.name === 'Workout') {
-              iconName = 'dumbbell';
+              iconName = 'plus';
             } else if (route.name === 'History') {
               iconName = 'history';
             }
