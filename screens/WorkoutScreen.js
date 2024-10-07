@@ -1,0 +1,19 @@
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+export default function WorkoutScreen() {
+  return (
+    <View style={styles.container}>
+      <Text>Workout Page</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'green', // Set background color to green
+  },
+});
