@@ -47,10 +47,10 @@ const ExerciseModal = ({ setModalVisible }) => {
         onChangeText={setNotes}
       />
       <TouchableOpacity style={styles.addButton} onPress={() => setExerciseModalVisible(true)}>
-        <Text style={styles.addButtonText}>Add exercises</Text>
+        <Text style={styles.addButtonText}>Add Exercises</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
-        <Text style={styles.cancelButtonText}>Cancel workout</Text>
+        <Text style={styles.cancelButtonText}>Cancel Workout</Text>
       </TouchableOpacity>
 
       {exerciseModalVisible && (
@@ -97,11 +97,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center', // Center the text
   },
   timer: {
     fontSize: 18,
     color: 'gray',
     marginBottom: 20,
+    textAlign: 'center', // Center the text
   },
   notesInput: {
     height: 40,
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   addButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#89CFF0',
     padding: 10,
     borderRadius: 5,
     marginVertical: 10,
@@ -124,12 +126,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   addButtonText: {
-    color: 'white',
-    textTransform: 'lowercase',
+    color: '#0096FF',
+    fontWeight: 'bold',
+    textAlign: 'center', // Center the text
   },
   cancelButtonText: {
-    color: 'white',
-    textTransform: 'lowercase',
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center', // Center the text
   },
 });
 
