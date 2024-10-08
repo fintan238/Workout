@@ -29,11 +29,9 @@ export default function App() {
             // You can return any component that you like here!
             return <FontAwesome name={iconName} size={size} color={color} />;
           },
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',
         })}
-        tabBarOptions={{
-          activeTintColor: 'tomato',
-          inactiveTintColor: 'gray',
-        }}
       >
         <Tab.Screen name="Profile" component={ProfileScreen} />
         <Tab.Screen name="Workout" component={WorkoutScreen} />
