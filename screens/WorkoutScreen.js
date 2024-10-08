@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Modal, StyleSheet } from 'react-native';
+import { View, Text, Button, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import ExerciseModal from './ExerciseModal'; // Assuming you have this component
 
 const WorkoutScreen = () => {
@@ -22,7 +22,9 @@ const WorkoutScreen = () => {
       </Modal>
 
       <Text style={styles.heading}>Templates</Text>
-      {/* Add your template components here */}
+      <TouchableOpacity style={styles.templateButton} onPress={() => console.log('+Template button pressed')}>
+        <Text style={styles.templateButtonText}>+Template</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -30,8 +32,10 @@ const WorkoutScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
+    padding: 20,
   },
   title: {
     fontSize: 24,
@@ -42,6 +46,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 20,
+    marginBottom: 10,
+  },
+  templateButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: '100%',
+  },
+  templateButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   modalView: {
     flex: 1,

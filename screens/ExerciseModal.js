@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal, FlatList, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-// import { CheckBox } from 'react-native-elements';
+// import CheckBox from 'expo-checkbox';
 import AddExerciseModal from './AddExerciseModal'; // Ensure this is the correct path
 
 const getTimeOfDay = () => {
@@ -53,6 +53,23 @@ const ExerciseModal = ({ setModalVisible }) => {
     );
   };
 
+  const handleSetChange = (exerciseName, setIndex, field, value) => {
+    setSelectedExercises((prevExercises) =>
+      prevExercises.map((exercise) => {
+        if (exercise.name === exerciseName) {
+          const updatedSets = exercise.sets.map((set, index) => {
+            if (index === setIndex) {
+              return { ...set, [field]: value };
+            }
+            return set;
+          });
+          return { ...exercise, sets: updatedSets };
+        }
+        return exercise;
+      })
+    );
+  };
+
   const renderSelectedExercise = ({ item }) => (
     <View style={styles.selectedExerciseContainer}>
       <View style={styles.exerciseHeader}>
@@ -73,9 +90,19 @@ const ExerciseModal = ({ setModalVisible }) => {
           <View key={index} style={styles.tableRow}>
             <Text style={styles.tableCell}>{set.setNumber}</Text>
             <Text style={styles.tableCell}>{set.previous}</Text>
-            <TextInput style={styles.tableInput} keyboardType="numeric" value={set.kg} />
-            <TextInput style={styles.tableInput} keyboardType="numeric" value={set.reps} />
-            {/* <CheckBox checked={set.checked} /> */}
+            <TextInput
+              style={styles.tableInput}
+              keyboardType="numeric"
+              value={set.kg}
+              onChangeText={(value) => handleSetChange(item.name, index, 'kg', value)}
+            />
+            <TextInput
+              style={styles.tableInput}
+              keyboardType="numeric"
+              value={set.reps}
+              onChangeText={(value) => handleSetChange(item.name, index, 'reps', value)}
+            />
+            {/* <CheckBox value={set.checked} /> */}
           </View>
         ))}
       </View>
@@ -132,11 +159,14 @@ const ExerciseModal = ({ setModalVisible }) => {
   );
 };
 
+const { width: screenWidth } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    width: screenWidth,
     padding: 20,
+    paddingTop: 50
   },
   header: {
     flexDirection: 'row',
@@ -171,7 +201,6 @@ const styles = StyleSheet.create({
   notesInput: {
     width: '100%',
     marginBottom: 20,
-    paddingLeft: 10,
     color: 'black',
   },
   selectedExerciseContainer: {
