@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal, FlatList, CheckBox } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal, FlatList } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+// import { CheckBox } from 'react-native-elements';
 import AddExerciseModal from './AddExerciseModal'; // Ensure this is the correct path
 
 const getTimeOfDay = () => {
@@ -29,8 +30,27 @@ const ExerciseModal = ({ setModalVisible }) => {
   const seconds = elapsedTime % 60;
 
   const handleAddExercises = (exercises) => {
-    setSelectedExercises((prevExercises) => [...prevExercises, ...exercises]);
+    const exercisesWithSets = exercises.map(exercise => ({
+      ...exercise,
+      sets: [{ setNumber: 1, previous: '', kg: '', reps: '', checked: false }]
+    }));
+    setSelectedExercises((prevExercises) => [...prevExercises, ...exercisesWithSets]);
     setExerciseModalVisible(false);
+  };
+
+  const handleAddSet = (exerciseName) => {
+    setSelectedExercises((prevExercises) =>
+      prevExercises.map((exercise) => {
+        if (exercise.name === exerciseName) {
+          const newSetNumber = exercise.sets.length + 1;
+          return {
+            ...exercise,
+            sets: [...exercise.sets, { setNumber: newSetNumber, previous: '', kg: '', reps: '', checked: false }]
+          };
+        }
+        return exercise;
+      })
+    );
   };
 
   const renderSelectedExercise = ({ item }) => (
@@ -49,14 +69,19 @@ const ExerciseModal = ({ setModalVisible }) => {
           <Text style={styles.tableHeader}>Reps</Text>
           <Text style={styles.tableHeader}>✓</Text>
         </View>
-        <View style={styles.tableRow}>
-          <Text style={styles.tableCell}>1</Text>
-          <Text style={styles.tableCell}></Text>
-          <TextInput style={styles.tableInput} keyboardType="numeric" />
-          <TextInput style={styles.tableInput} keyboardType="numeric" />
-          <CheckBox value={false} />
-        </View>
+        {item.sets.map((set, index) => (
+          <View key={index} style={styles.tableRow}>
+            <Text style={styles.tableCell}>{set.setNumber}</Text>
+            <Text style={styles.tableCell}>{set.previous}</Text>
+            <TextInput style={styles.tableInput} keyboardType="numeric" value={set.kg} />
+            <TextInput style={styles.tableInput} keyboardType="numeric" value={set.reps} />
+            {/* <CheckBox checked={set.checked} /> */}
+          </View>
+        ))}
       </View>
+      <TouchableOpacity style={styles.addSetButton} onPress={() => handleAddSet(item.name)}>
+        <Text style={styles.addSetButtonText}>Add Set</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -194,6 +219,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderBottomWidth: 1,
     borderBottomColor: 'gray',
+  },
+  addSetButton: {
+    backgroundColor: 'gray',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignItems: 'center',
+    width: '100%',
+  },
+  addSetButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   addButton: {
     backgroundColor: '#89CFF0', // Lighter blue background
