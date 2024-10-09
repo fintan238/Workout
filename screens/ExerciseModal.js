@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: screenWidth,
     backgroundColor: 'white',
-    padding: 10,
+    padding: 20,
     paddingTop: 50,
   },
   header: {
