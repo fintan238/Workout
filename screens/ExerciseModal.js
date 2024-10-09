@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Modal, FlatList, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-// import CheckBox from 'expo-checkbox';
 import AddExerciseModal from './AddExerciseModal'; // Ensure this is the correct path
 
 const getTimeOfDay = () => {
@@ -70,6 +69,23 @@ const ExerciseModal = ({ setModalVisible }) => {
     );
   };
 
+  const handleCheckboxChange = (exerciseName, setIndex) => {
+    setSelectedExercises((prevExercises) =>
+      prevExercises.map((exercise) => {
+        if (exercise.name === exerciseName) {
+          const updatedSets = exercise.sets.map((set, index) => {
+            if (index === setIndex) {
+              return { ...set, checked: !set.checked };
+            }
+            return set;
+          });
+          return { ...exercise, sets: updatedSets };
+        }
+        return exercise;
+      })
+    );
+  };
+
   const renderSelectedExercise = ({ item }) => (
     <View style={styles.selectedExerciseContainer}>
       <View style={styles.exerciseHeader}>
@@ -80,29 +96,40 @@ const ExerciseModal = ({ setModalVisible }) => {
       </View>
       <View style={styles.table}>
         <View style={styles.tableRow}>
-          <Text style={styles.tableHeader}>Set</Text>
-          <Text style={styles.tableHeader}>Previous</Text>
-          <Text style={styles.tableHeader}>kg</Text>
-          <Text style={styles.tableHeader}>Reps</Text>
-          <Text style={styles.tableHeader}>✓</Text>
+          <Text style={[styles.tableHeader, styles.setColumn]}>Set</Text>
+          <Text style={[styles.tableHeader, styles.previousColumn]}>Previous</Text>
+          <Text style={[styles.tableHeader, styles.kgColumn]}>kg</Text>
+          <Text style={[styles.tableHeader, styles.repsColumn]}>Reps</Text>
+          <Text style={[styles.tableHeader, styles.checkboxColumn]}>✓</Text>
         </View>
         {item.sets.map((set, index) => (
           <View key={index} style={styles.tableRow}>
-            <Text style={styles.tableCell}>{set.setNumber}</Text>
-            <Text style={styles.tableCell}>{set.previous}</Text>
+            <TouchableOpacity style={[styles.setButton, styles.setColumn]}>
+              <Text style={styles.tableCell}>{set.setNumber}</Text>
+            </TouchableOpacity>
+            <Text style={[styles.tableCell, styles.previousColumn]}>{set.previous}</Text>
             <TextInput
-              style={styles.tableInput}
+              style={[styles.tableInput, styles.kgColumn]}
               keyboardType="numeric"
               value={set.kg}
               onChangeText={(value) => handleSetChange(item.name, index, 'kg', value)}
             />
             <TextInput
-              style={styles.tableInput}
+              style={[styles.tableInput, styles.repsColumn]}
               keyboardType="numeric"
               value={set.reps}
               onChangeText={(value) => handleSetChange(item.name, index, 'reps', value)}
             />
-            {/* <CheckBox value={set.checked} /> */}
+            <TouchableOpacity
+              style={[
+                styles.checkboxButton,
+                styles.checkboxColumn,
+                set.checked && styles.checkboxButtonChecked
+              ]}
+              onPress={() => handleCheckboxChange(item.name, index)}
+            >
+              <Text style={[styles.tickSymbol, set.checked && styles.tickSymbolChecked]}>✓</Text>
+            </TouchableOpacity>
           </View>
         ))}
       </View>
@@ -165,8 +192,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: screenWidth,
-    padding: 20,
-    paddingTop: 50
+    backgroundColor: 'white',
+    padding: 10,
+    paddingTop: 50,
   },
   header: {
     flexDirection: 'row',
@@ -236,18 +264,41 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     fontWeight: 'bold',
-    flex: 1,
     textAlign: 'center',
   },
   tableCell: {
-    flex: 1,
     textAlign: 'center',
   },
   tableInput: {
-    flex: 1,
     textAlign: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
+    borderBottomWidth: 0, // Remove underline
+    backgroundColor: '#f0f0f0', // Light grey background
+    marginHorizontal: 5, // Slight separation between input fields
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  setButton: {
+    textAlign: 'center',
+    backgroundColor: '#e0e0e0', // Slight grey background
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  checkboxButton: {
+    backgroundColor: '#e0e0e0', // Slight grey background
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 27, // Match the height of the numerical input fields
+  },
+  checkboxButtonChecked: {
+    backgroundColor: '#89CFF0', // Light blue background when checked
+  },
+  tickSymbol: {
+    color: 'grey', // Default tick color
+    fontWeight: 'bold',
+  },
+  tickSymbolChecked: {
+    color: 'white', // Tick color when checked
   },
   addSetButton: {
     backgroundColor: 'gray',
@@ -284,6 +335,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textTransform: 'capitalize',
+  },
+  setColumn: {
+    flex: 0.5, // Thinner column
+  },
+  previousColumn: {
+    flex: 2, // Wider column
+  },
+  kgColumn: {
+    flex: 1, // Slightly thinner column
+  },
+  repsColumn: {
+    flex: 1, // Slightly thinner column
+  },
+  checkboxColumn: {
+    flex: 0.5, // Thinner column
   },
 });
 
