@@ -1,7 +1,6 @@
 {
   "expo": {
-    "name": "workout",
-    "displayName": "Workout",
+    "name": "Workout",
     "slug": "Workout",
     "version": "1.0.0",
     "orientation": "portrait",
