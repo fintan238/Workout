@@ -1,7 +1,9 @@
 {
+  "name": "Workout",
   "expo": {
     "name": "Workout",
-    "slug": "Workout",
+    "slug": "workout",
+    "entryPoint": "./index.js",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,6 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "jsEngine": "hermes",
     "ios": {
       "supportsTablet": true
     },
