@@ -1,14 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 
-export default function ProfileScreen() {
+const ProfileScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text>Profile Page</Text>
-      <Button title="Edit Profile" onPress={() => {}} />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View>
+        <Text>Profile Screen</Text>
+      </View>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -17,3 +18,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+export default ProfileScreen;

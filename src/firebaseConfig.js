@@ -1,10 +1,9 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getAuth } from 'firebase/auth';
+import { initializeApp, getApps } from 'firebase/app'; // Import getApps
+import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth'; // Adjust imports
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAVMISO0YT2p24v6hXLH_291I3Nw2eoIK0",
   authDomain: "workoutios-a8428.firebaseapp.com",
@@ -15,9 +14,20 @@ const firebaseConfig = {
   measurementId: "G-MKT3H0Y1CW"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
+// Initialize Firebase if it hasn't been initialized already
+let app;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0]; // Use the already initialized app
+}
 
-export { auth };
+// Initialize Firebase Auth
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage), // Use AsyncStorage for persistence
+});
+
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
+
+export { auth, googleProvider, facebookProvider };
