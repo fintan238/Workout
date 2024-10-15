@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+const global = StyleSheet.create({
   heading1: {
     fontSize: 32,
     fontWeight: 'bold',
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
+    backgroundColor: 'yellow'
   },
   addButton: {
     backgroundColor: 'blue',
@@ -93,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default global;
