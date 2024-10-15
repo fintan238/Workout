@@ -1,10 +1,26 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+const global = StyleSheet.create({
+  heading1: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    padding: 10,
+  },
+  heading2: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    padding: 10
+  },
+  heading3: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    padding: 10,
+    paddingTop: 30
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    margin: 10,
+    backgroundColor: 'yellow'
   },
   addButton: {
     backgroundColor: 'blue',
@@ -78,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default global;

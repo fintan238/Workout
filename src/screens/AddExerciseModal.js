@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Modal, TextInput, StyleSheet } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { Picker } from '@react-native-picker/picker';
 import { bodyParts, categories, exercises } from '../exercises';
 
@@ -41,7 +42,7 @@ const AddExerciseModal = ({ setExerciseModalVisible, onAddExercises }) => {
         }}
       >
         <Text>{item.name}</Text>
-        {isSelected && <FontAwesome name="check" size={24} color="black" />}
+        {isSelected && <Feather name="check" size={16} color="black" />}
       </TouchableOpacity>
     );
   };
@@ -68,7 +69,7 @@ const AddExerciseModal = ({ setExerciseModalVisible, onAddExercises }) => {
         <View style={styles.modalView}>
           <View style={styles.modalHeader}>
             <TouchableOpacity onPress={() => setExerciseModalVisible(false)}>
-              <FontAwesome name="close" size={24} color="black" />
+              <AntDesign name="close" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={submitSelectedExercises}

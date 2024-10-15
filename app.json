@@ -1,8 +1,8 @@
 {
-  "name": "Workout",
   "expo": {
     "name": "Workout",
     "slug": "workout",
+    "owner": "fintan238",
     "entryPoint": "./index.js",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,10 +21,15 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.fintan238.workout"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "scheme": [
+      "workout",
+      "fb563225649384232"
+    ]
   }
 }
