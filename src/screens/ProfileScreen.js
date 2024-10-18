@@ -1,22 +1,24 @@
-import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import { Text, View, Button } from 'react-native';
+import { authStyles } from './AuthComponents/AuthStyles';
+import { useDispatch } from 'react-redux';
+import { signOut } from '../features/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from '../firebaseConfig';
+import { signOut as signOutFirebase } from 'firebase/auth';
 
-const ProfileScreen = () => {
+export default function Profile() {
+  const dispatch = useDispatch();
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
-        <Text>Profile Screen</Text>
-      </View>
-    </SafeAreaView>
+    <View style={authStyles.screenContainer}>
+      <Text style={authStyles.title}>Profile</Text>
+      <Button
+        title="sign out"
+        onPress={async () => {
+          signOutFirebase(auth).catch(e => alert(e));
+          await AsyncStorage.removeItem('@token');
+          dispatch(signOut());
+        }}
+      />
+    </View>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
-export default ProfileScreen;
+}

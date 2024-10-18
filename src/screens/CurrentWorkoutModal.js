@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, Modal, FlatList, Dimensions } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
-import global from '../UniversalStyles';
+import global from '../GlobalStyles';
 import AddExerciseModal from './AddExerciseModal';
 import MyButton from '../components/MyButton';
 

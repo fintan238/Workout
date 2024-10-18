@@ -1,10 +1,12 @@
 import 'react-native-gesture-handler';
-import Navigation from './src/screens/Navigation';
+import Wrapper from './src/Navigation/Navigation';
+import { Provider } from 'react-redux';
+import { store } from './src/app/store';
 
 export default function App() {
   return (
-    <Navigation />
+    <Provider store={store}>
+      <Wrapper />
+    </Provider>
   );
 }
-
-

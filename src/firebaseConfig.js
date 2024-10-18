@@ -1,9 +1,9 @@
-import { initializeApp, getApps } from 'firebase/app'; // Import getApps
-import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth'; // Adjust imports
+import { initializeApp, getApps } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAVMISO0YT2p24v6hXLH_291I3Nw2eoIK0",
   authDomain: "workoutios-a8428.firebaseapp.com",
@@ -14,20 +14,15 @@ const firebaseConfig = {
   measurementId: "G-MKT3H0Y1CW"
 };
 
-// Initialize Firebase if it hasn't been initialized already
-let app;
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApps()[0]; // Use the already initialized app
-}
+let app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
-// Initialize Firebase Auth
 const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage), // Use AsyncStorage for persistence
+  persistence: getReactNativePersistence(AsyncStorage),
 });
+
+const db = getFirestore(app);
 
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 
-export { auth, googleProvider, facebookProvider };
+export { auth, db, googleProvider, facebookProvider };
