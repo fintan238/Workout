@@ -32,16 +32,6 @@ const global = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-  cancelButton: {
-    backgroundColor: 'red',
-    padding: 15,
-    borderRadius: 5,
-  },
-  cancelButtonText: {
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
-  },
   modalView: {
     flex: 1,
     justifyContent: 'center',

@@ -5,6 +5,7 @@ import Feather from '@expo/vector-icons/Feather';
 import global from '../GlobalStyles';
 import AddExerciseModal from './AddExerciseModal';
 import MyButton from '../components/MyButton';
+import Colours from '../Colours';
 
 const CurrentWorkoutModal = ({ setModalVisible }) => {
   const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
@@ -170,9 +171,11 @@ const CurrentWorkoutModal = ({ setModalVisible }) => {
           keyExtractor={(item) => item.name}
         />
         <MyButton title={"Add Exercises"} onPress={() => setExerciseModalVisible(true)}></MyButton>
-        <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
-          <Text style={styles.cancelButtonText}>Cancel Workout</Text>
-        </TouchableOpacity>
+        <MyButton
+          title={"Cancel Workout"}
+          onPress={() => setModalVisible(false)}
+          style={{ backgroundColor: Colours.red, marginTop: 10 }}>
+        </MyButton>
         <Modal
           animationType="slide"
           transparent={true}
@@ -318,21 +321,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 10,
     alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#ff6666',
-    width: '94%',
-    height: 45,
-    padding: 10,
-    margin: 10,
-    borderRadius: 10,
-    justifyContent: 'center',
-    color: 'white'
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white'
   },
   setColumn: {
     flex: 0.5, // Thinner column
