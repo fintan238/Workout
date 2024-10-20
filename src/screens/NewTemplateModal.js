@@ -1,11 +1,14 @@
-// NewTemplateModal.js
 import React, { useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, Modal, FlatList, Dimensions } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MyButton from '../components/MyButton';
 import AddExerciseModal from './AddExerciseModal';
+import Feather from '@expo/vector-icons/Feather';
+import global from '../GlobalStyles';
+import { saveTemplateToDatabase } from '../utils/db';
 
-const NewTemplateModal = ({ visible, setModalVisible }) => {
+const NewTemplateModal = ({ visible, setModalVisible, userId }) => {
+  const [templateName, setTemplateName] = useState('');
   const [notes, setNotes] = useState('');
   const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState([]);
@@ -33,7 +36,9 @@ const NewTemplateModal = ({ visible, setModalVisible }) => {
           <Text style={[styles.tableHeader, styles.previousColumn]}>Previous</Text>
           <Text style={[styles.tableHeader, styles.kgColumn]}>kg</Text>
           <Text style={[styles.tableHeader, styles.repsColumn]}>Reps</Text>
-          <Text style={[styles.tableHeader, styles.checkboxColumn]}>✓</Text>
+          <Text style={[styles.tableHeader, styles.checkboxColumn]}>
+            <AntDesign name="lock" size={18} color="black" />
+          </Text>
         </View>
         {item.sets.map((set, index) => (
           <View key={index} style={styles.tableRow}>
@@ -59,9 +64,8 @@ const NewTemplateModal = ({ visible, setModalVisible }) => {
                 styles.checkboxColumn,
                 set.checked && styles.checkboxButtonChecked
               ]}
-              onPress={() => handleCheckboxChange(item.name, index)}
             >
-              <Text style={[styles.tickSymbol, set.checked && styles.tickSymbolChecked]}>✓</Text>
+              <Text style={[styles.tickSymbol, set.checked && styles.tickSymbolChecked]}>-</Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -104,25 +108,29 @@ const NewTemplateModal = ({ visible, setModalVisible }) => {
     );
   };
 
-  const handleCheckboxChange = (exerciseName, setIndex) => {
-    setSelectedExercises((prevExercises) =>
-      prevExercises.map((exercise) => {
-        if (exercise.name === exerciseName) {
-          const updatedSets = exercise.sets.map((set, index) => {
-            if (index === setIndex) {
-              return { ...set, checked: !set.checked };
-            }
-            return set;
-          });
-          return { ...exercise, sets: updatedSets };
-        }
-        return exercise;
-      })
-    );
+  const handleSaveTemplate = async () => {
+    const templateData = {
+      name: templateName,
+      notes: notes,
+      exercises: selectedExercises.map(exercise => ({
+        name: exercise.name,
+        sets: exercise.sets.map(set => ({
+          setNumber: set.setNumber,
+          kg: set.kg,
+          reps: set.reps,
+        })),
+      })),
+    };
+
+    try {
+      await saveTemplateToDatabase(userId, templateData);
+      alert('Template saved successfully!');
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Error saving template:', error);
+      alert('Failed to save template. Please try again.');
+    }
   };
-
-
-
 
   return (
     <Modal
@@ -136,11 +144,16 @@ const NewTemplateModal = ({ visible, setModalVisible }) => {
           <View style={styles.clockIcon}>
             <AntDesign name="clockcircleo" size={24} color="black" />
           </View>
-          <TouchableOpacity style={styles.saveButton} onPress={() => setModalVisible(false)}>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSaveTemplate}>
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.container}>
+          <TextInput
+            style={global.heading1}
+            placeholder="New Template"
+            value={templateName}
+            onChangeText={setTemplateName}/>
           <TextInput
             style={styles.notesInput}
             placeholder="Notes"
@@ -156,9 +169,6 @@ const NewTemplateModal = ({ visible, setModalVisible }) => {
             keyExtractor={(item) => item.name}
           />
           <MyButton title={"Add Exercises"} onPress={() => setExerciseModalVisible(true)}></MyButton>
-          <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
-            <Text style={styles.cancelButtonText}>Cancel Workout</Text>
-          </TouchableOpacity>
           <Modal
             animationType="slide"
             transparent={true}
@@ -300,21 +310,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 10,
     alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#ff6666',
-    width: '94%',
-    height: 45,
-    padding: 10,
-    margin: 10,
-    borderRadius: 10,
-    justifyContent: 'center',
-    color: 'white'
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white'
   },
   setColumn: {
     flex: 0.5, // Thinner column

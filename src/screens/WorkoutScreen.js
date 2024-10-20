@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, SafeAreaView, Modal } from 'react-native';
+import { useSelector } from 'react-redux';
 import CurrentWorkoutModal from './CurrentWorkoutModal';
 import NewTemplateModal from './NewTemplateModal';
 import global from '../GlobalStyles';
 import MyButton from '../components/MyButton';
+import { selectUser } from '../features/user';
 
 const WorkoutScreen = () => {
+  const user = useSelector(selectUser);
+  const userId = user?.uid;
   const [currentWorkoutModalVisible, setCurrentWorkoutModalVisible] = useState(false);
   const [newTemplateModalVisible, setNewTemplateModalVisible] = useState(false);
 
@@ -29,11 +33,13 @@ const WorkoutScreen = () => {
       <Text style={global.heading3}>Templates</Text>
       <MyButton title="New Template" onPress={() => setNewTemplateModalVisible(true)} />
 
-      {/* Directly include NewTemplateModal here */}
-      <NewTemplateModal
-        visible={newTemplateModalVisible}
-        setModalVisible={setNewTemplateModalVisible}
-      />
+      {userId && ( // Conditionally render the modal if userId exists
+        <NewTemplateModal
+          visible={newTemplateModalVisible}
+          setModalVisible={setNewTemplateModalVisible}
+          userId={userId}
+        />
+      )}
     </SafeAreaView>
   );
 };

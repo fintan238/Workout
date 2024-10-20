@@ -28,7 +28,6 @@ export default function AuthScreen() {
       signInWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
           const user = userCredential.user;
-          alert('signed in success');
           await getUserFromDatabase(user);
           const token = await user.getIdToken();
           dispatch(signIn(token));

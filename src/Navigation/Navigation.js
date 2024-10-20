@@ -25,17 +25,19 @@ function Navigator() {
   React.useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async user => {
       if (user) {
+        console.log("User is signed in:", user);
         const userToSave = {
           id: user.uid,
-          name: user.displayName,
+          name: user.name,
           email: user.email,
           photoUrl: user.photoURL,
-          createdAt: user.metadata.creationTime,
+          createdAt: user.metadata.createdAt,
         };
         dispatch(restoreToken(user.email));
         dispatch(setUser(userToSave));
       } else {
         dispatch(restoreToken(null));
+        console.log("No user is signed in.");
       }
       setIsLoading(false);
     });
