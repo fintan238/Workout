@@ -6,7 +6,7 @@ import NewTemplateModal from './NewTemplateModal';
 import global from '../GlobalStyles';
 import MyButton from '../components/MyButton';
 import { selectUser } from '../features/user';
-import MyCarousel from '../components/MyCarousel';
+import UserTemplates from './WorkoutComponents/UserTemplates';
 
 const WorkoutScreen = () => {
   const user = useSelector(selectUser);
@@ -41,7 +41,7 @@ const WorkoutScreen = () => {
           userId={userId}
         />
       )}
-      <MyCarousel userId={userId} />
+      <UserTemplates userId={userId} />
     </SafeAreaView>
   );
 };

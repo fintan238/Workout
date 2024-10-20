@@ -1,4 +1,5 @@
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import Colours from '../Colours';
 
 export default function MyButton({ title, onPress }) {
   return (
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     color: 'white',
-    backgroundColor: '#89CFF0'
+    backgroundColor: Colours.primary
   },
   buttonText: {
     fontSize: 16,

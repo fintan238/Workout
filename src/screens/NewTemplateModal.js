@@ -141,9 +141,9 @@ const NewTemplateModal = ({ visible, setModalVisible, userId }) => {
     >
       <SafeAreaView>
         <View style={styles.header}>
-          <View style={styles.clockIcon}>
-            <AntDesign name="clockcircleo" size={24} color="black" />
-          </View>
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <AntDesign name="close" size={24} color="black" />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.saveButton} onPress={handleSaveTemplate}>
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
@@ -190,7 +190,6 @@ export default NewTemplateModal;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'yellow',
     margin: 10,
   },
   header: {

@@ -193,7 +193,6 @@ export default CurrentWorkoutModal;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'yellow',
     margin: 10,
   },
   header: {

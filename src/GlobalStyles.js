@@ -20,7 +20,6 @@ const global = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
-    backgroundColor: 'yellow'
   },
   addButton: {
     backgroundColor: 'blue',
