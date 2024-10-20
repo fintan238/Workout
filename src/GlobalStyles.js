@@ -20,7 +20,6 @@ const global = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
-    backgroundColor: 'yellow'
   },
   addButton: {
     backgroundColor: 'blue',
@@ -29,16 +28,6 @@ const global = StyleSheet.create({
     marginBottom: 20,
   },
   addButtonText: {
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  cancelButton: {
-    backgroundColor: 'red',
-    padding: 15,
-    borderRadius: 5,
-  },
-  cancelButtonText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center',

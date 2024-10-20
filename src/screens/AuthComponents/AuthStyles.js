@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export const globalStyles = StyleSheet.create({
+export const authStyles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     alignItems: 'center',

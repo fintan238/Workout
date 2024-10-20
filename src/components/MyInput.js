@@ -1,4 +1,4 @@
-import { TextInput, Text, View, StyleSheet } from 'react-native';
+import { TextInput, View, StyleSheet } from 'react-native';
 export default function MyInput({
   label,
   value,

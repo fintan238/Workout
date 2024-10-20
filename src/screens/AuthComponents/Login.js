@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { Button, Text, View } from 'react-native';
-import MyButton from '../MyButton';
-import MyInput from '../MyInput';
-import { globalStyles } from '../../styles/global';
+import MyButton from '../../components/MyButton';
+import MyInput from '../../components/MyInput';
+import { authStyles } from './AuthStyles';
 import { useDispatch } from 'react-redux';
-import { setAuthState } from '../../features/auth/auth';
-import { signIn } from '../../features/auth/auth';
+import { setAuthState, signIn } from '../../features/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import GoogleSignInButton from './GoogleSignIn';
+import GoogleSignInButton from './GoogleSignIn';
 import FacebookSignInButton from './FacebookSignIn';
-// import AppleLoginButton from './AppleSignInButton';
 
 export default function Login({ onLogin, setEmail, setPassword }) {
   const [token, setToken] = useState('');
@@ -26,8 +24,8 @@ export default function Login({ onLogin, setEmail, setPassword }) {
   }
 
   return (
-    <View style={globalStyles.screenContainer}>
-      <Text style={globalStyles.title}>Login</Text>
+    <View style={authStyles.screenContainer}>
+      <Text style={authStyles.title}>Login</Text>
       <MyInput onChangeText={setEmail} label="Email" />
       <MyInput label="Password" secureTextEntry onChangeText={setPassword} />
       <MyButton title="Login" onPress={onLogin} />
@@ -35,9 +33,8 @@ export default function Login({ onLogin, setEmail, setPassword }) {
         title="Sign Up"
         onPress={() => dispatch(setAuthState('signUp'))}
       />
-      {/* <GoogleSignInButton /> */}
+      <GoogleSignInButton />
       <FacebookSignInButton />
-      {/* <AppleLoginButton /> */}
     </View>
   );
 }

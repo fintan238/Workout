@@ -15,7 +15,8 @@
     },
     "jsEngine": "hermes",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fintan238.workout"
     },
     "android": {
       "adaptiveIcon": {
