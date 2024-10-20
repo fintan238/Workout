@@ -231,7 +231,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 10,
     marginBottom: 20,
-    color: 'red',
   },
   selectedExerciseContainer: {
     backgroundColor: 'white',
